@@ -18,10 +18,17 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$EditProfileState {
   UserData? get editableUser => throw _privateConstructorUsedError;
   bool get isEditing => throw _privateConstructorUsedError;
-  bool get isSaving => throw _privateConstructorUsedError;
+  bool get isEditingImage => throw _privateConstructorUsedError;
+  bool get isSaved => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get surname => throw _privateConstructorUsedError;
   String get email => throw _privateConstructorUsedError;
+  String get phone => throw _privateConstructorUsedError;
+  String? get profileImagePath => throw _privateConstructorUsedError;
+  ValidationResult get nameValidation => throw _privateConstructorUsedError;
+  ValidationResult get surnameValidation => throw _privateConstructorUsedError;
+  ValidationResult get emailValidation => throw _privateConstructorUsedError;
+  ValidationResult get phoneValidation => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EditProfileStateCopyWith<EditProfileState> get copyWith =>
@@ -37,10 +44,17 @@ abstract class $EditProfileStateCopyWith<$Res> {
   $Res call(
       {UserData? editableUser,
       bool isEditing,
-      bool isSaving,
+      bool isEditingImage,
+      bool isSaved,
       String name,
       String surname,
-      String email});
+      String email,
+      String phone,
+      String? profileImagePath,
+      ValidationResult nameValidation,
+      ValidationResult surnameValidation,
+      ValidationResult emailValidation,
+      ValidationResult phoneValidation});
 }
 
 /// @nodoc
@@ -58,10 +72,17 @@ class _$EditProfileStateCopyWithImpl<$Res, $Val extends EditProfileState>
   $Res call({
     Object? editableUser = freezed,
     Object? isEditing = null,
-    Object? isSaving = null,
+    Object? isEditingImage = null,
+    Object? isSaved = null,
     Object? name = null,
     Object? surname = null,
     Object? email = null,
+    Object? phone = null,
+    Object? profileImagePath = freezed,
+    Object? nameValidation = null,
+    Object? surnameValidation = null,
+    Object? emailValidation = null,
+    Object? phoneValidation = null,
   }) {
     return _then(_value.copyWith(
       editableUser: freezed == editableUser
@@ -72,9 +93,13 @@ class _$EditProfileStateCopyWithImpl<$Res, $Val extends EditProfileState>
           ? _value.isEditing
           : isEditing // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSaving: null == isSaving
-          ? _value.isSaving
-          : isSaving // ignore: cast_nullable_to_non_nullable
+      isEditingImage: null == isEditingImage
+          ? _value.isEditingImage
+          : isEditingImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSaved: null == isSaved
+          ? _value.isSaved
+          : isSaved // ignore: cast_nullable_to_non_nullable
               as bool,
       name: null == name
           ? _value.name
@@ -88,6 +113,30 @@ class _$EditProfileStateCopyWithImpl<$Res, $Val extends EditProfileState>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      phone: null == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImagePath: freezed == profileImagePath
+          ? _value.profileImagePath
+          : profileImagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nameValidation: null == nameValidation
+          ? _value.nameValidation
+          : nameValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      surnameValidation: null == surnameValidation
+          ? _value.surnameValidation
+          : surnameValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      emailValidation: null == emailValidation
+          ? _value.emailValidation
+          : emailValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      phoneValidation: null == phoneValidation
+          ? _value.phoneValidation
+          : phoneValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
     ) as $Val);
   }
 }
@@ -103,10 +152,17 @@ abstract class _$$EditProfileStateImplCopyWith<$Res>
   $Res call(
       {UserData? editableUser,
       bool isEditing,
-      bool isSaving,
+      bool isEditingImage,
+      bool isSaved,
       String name,
       String surname,
-      String email});
+      String email,
+      String phone,
+      String? profileImagePath,
+      ValidationResult nameValidation,
+      ValidationResult surnameValidation,
+      ValidationResult emailValidation,
+      ValidationResult phoneValidation});
 }
 
 /// @nodoc
@@ -122,10 +178,17 @@ class __$$EditProfileStateImplCopyWithImpl<$Res>
   $Res call({
     Object? editableUser = freezed,
     Object? isEditing = null,
-    Object? isSaving = null,
+    Object? isEditingImage = null,
+    Object? isSaved = null,
     Object? name = null,
     Object? surname = null,
     Object? email = null,
+    Object? phone = null,
+    Object? profileImagePath = freezed,
+    Object? nameValidation = null,
+    Object? surnameValidation = null,
+    Object? emailValidation = null,
+    Object? phoneValidation = null,
   }) {
     return _then(_$EditProfileStateImpl(
       editableUser: freezed == editableUser
@@ -136,9 +199,13 @@ class __$$EditProfileStateImplCopyWithImpl<$Res>
           ? _value.isEditing
           : isEditing // ignore: cast_nullable_to_non_nullable
               as bool,
-      isSaving: null == isSaving
-          ? _value.isSaving
-          : isSaving // ignore: cast_nullable_to_non_nullable
+      isEditingImage: null == isEditingImage
+          ? _value.isEditingImage
+          : isEditingImage // ignore: cast_nullable_to_non_nullable
+              as bool,
+      isSaved: null == isSaved
+          ? _value.isSaved
+          : isSaved // ignore: cast_nullable_to_non_nullable
               as bool,
       name: null == name
           ? _value.name
@@ -152,6 +219,30 @@ class __$$EditProfileStateImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String,
+      phone: null == phone
+          ? _value.phone
+          : phone // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImagePath: freezed == profileImagePath
+          ? _value.profileImagePath
+          : profileImagePath // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nameValidation: null == nameValidation
+          ? _value.nameValidation
+          : nameValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      surnameValidation: null == surnameValidation
+          ? _value.surnameValidation
+          : surnameValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      emailValidation: null == emailValidation
+          ? _value.emailValidation
+          : emailValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
+      phoneValidation: null == phoneValidation
+          ? _value.phoneValidation
+          : phoneValidation // ignore: cast_nullable_to_non_nullable
+              as ValidationResult,
     ));
   }
 }
@@ -162,27 +253,48 @@ class _$EditProfileStateImpl implements _EditProfileState {
   _$EditProfileStateImpl(
       {required this.editableUser,
       required this.isEditing,
-      required this.isSaving,
+      required this.isEditingImage,
+      required this.isSaved,
       required this.name,
       required this.surname,
-      required this.email});
+      required this.email,
+      required this.phone,
+      required this.profileImagePath,
+      required this.nameValidation,
+      required this.surnameValidation,
+      required this.emailValidation,
+      required this.phoneValidation});
 
   @override
   final UserData? editableUser;
   @override
   final bool isEditing;
   @override
-  final bool isSaving;
+  final bool isEditingImage;
+  @override
+  final bool isSaved;
   @override
   final String name;
   @override
   final String surname;
   @override
   final String email;
+  @override
+  final String phone;
+  @override
+  final String? profileImagePath;
+  @override
+  final ValidationResult nameValidation;
+  @override
+  final ValidationResult surnameValidation;
+  @override
+  final ValidationResult emailValidation;
+  @override
+  final ValidationResult phoneValidation;
 
   @override
   String toString() {
-    return 'EditProfileState(editableUser: $editableUser, isEditing: $isEditing, isSaving: $isSaving, name: $name, surname: $surname, email: $email)';
+    return 'EditProfileState(editableUser: $editableUser, isEditing: $isEditing, isEditingImage: $isEditingImage, isSaved: $isSaved, name: $name, surname: $surname, email: $email, phone: $phone, profileImagePath: $profileImagePath, nameValidation: $nameValidation, surnameValidation: $surnameValidation, emailValidation: $emailValidation, phoneValidation: $phoneValidation)';
   }
 
   @override
@@ -194,16 +306,41 @@ class _$EditProfileStateImpl implements _EditProfileState {
                 other.editableUser == editableUser) &&
             (identical(other.isEditing, isEditing) ||
                 other.isEditing == isEditing) &&
-            (identical(other.isSaving, isSaving) ||
-                other.isSaving == isSaving) &&
+            (identical(other.isEditingImage, isEditingImage) ||
+                other.isEditingImage == isEditingImage) &&
+            (identical(other.isSaved, isSaved) || other.isSaved == isSaved) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.surname, surname) || other.surname == surname) &&
-            (identical(other.email, email) || other.email == email));
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.profileImagePath, profileImagePath) ||
+                other.profileImagePath == profileImagePath) &&
+            (identical(other.nameValidation, nameValidation) ||
+                other.nameValidation == nameValidation) &&
+            (identical(other.surnameValidation, surnameValidation) ||
+                other.surnameValidation == surnameValidation) &&
+            (identical(other.emailValidation, emailValidation) ||
+                other.emailValidation == emailValidation) &&
+            (identical(other.phoneValidation, phoneValidation) ||
+                other.phoneValidation == phoneValidation));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType, editableUser, isEditing, isSaving, name, surname, email);
+      runtimeType,
+      editableUser,
+      isEditing,
+      isEditingImage,
+      isSaved,
+      name,
+      surname,
+      email,
+      phone,
+      profileImagePath,
+      nameValidation,
+      surnameValidation,
+      emailValidation,
+      phoneValidation);
 
   @JsonKey(ignore: true)
   @override
@@ -215,25 +352,47 @@ class _$EditProfileStateImpl implements _EditProfileState {
 
 abstract class _EditProfileState implements EditProfileState {
   factory _EditProfileState(
-      {required final UserData? editableUser,
-      required final bool isEditing,
-      required final bool isSaving,
-      required final String name,
-      required final String surname,
-      required final String email}) = _$EditProfileStateImpl;
+          {required final UserData? editableUser,
+          required final bool isEditing,
+          required final bool isEditingImage,
+          required final bool isSaved,
+          required final String name,
+          required final String surname,
+          required final String email,
+          required final String phone,
+          required final String? profileImagePath,
+          required final ValidationResult nameValidation,
+          required final ValidationResult surnameValidation,
+          required final ValidationResult emailValidation,
+          required final ValidationResult phoneValidation}) =
+      _$EditProfileStateImpl;
 
   @override
   UserData? get editableUser;
   @override
   bool get isEditing;
   @override
-  bool get isSaving;
+  bool get isEditingImage;
+  @override
+  bool get isSaved;
   @override
   String get name;
   @override
   String get surname;
   @override
   String get email;
+  @override
+  String get phone;
+  @override
+  String? get profileImagePath;
+  @override
+  ValidationResult get nameValidation;
+  @override
+  ValidationResult get surnameValidation;
+  @override
+  ValidationResult get emailValidation;
+  @override
+  ValidationResult get phoneValidation;
   @override
   @JsonKey(ignore: true)
   _$$EditProfileStateImplCopyWith<_$EditProfileStateImpl> get copyWith =>

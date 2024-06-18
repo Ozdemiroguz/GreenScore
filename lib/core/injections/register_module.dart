@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../../router/router.dart';
 
@@ -21,6 +22,9 @@ abstract class RegisterModule {
 
   @lazySingleton
   FirebaseFirestore get firebaseFirestore => FirebaseFirestore.instance;
+
+  @lazySingleton
+  FirebaseStorage get firebaseStorage => FirebaseStorage.instance;
 
   @lazySingleton
   Gemini get gemini => Gemini.instance;

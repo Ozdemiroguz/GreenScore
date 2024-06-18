@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:greenapp/core/models/user_data.dart';
@@ -34,6 +36,7 @@ class ProductRepositoryImpl implements ProductRepository {
           nature_point: value['nature_point'].toDouble(),
           decomposition_year: value['decomposition_year'],
           recycling_rate: value['recycling_rate'],
+          savedCo2: value["saved_co2"].toDouble(),
         );
         return data;
       });
@@ -47,7 +50,10 @@ class ProductRepositoryImpl implements ProductRepository {
   @override
   Future<List<RecyclingPoint>> getRecyclingPoints(
     String currentCategory,
+    LatLng currentLocation,
   ) async {
+    // print("currentCategory: $currentCategory");
+    // print("currentLocation: $currentLocation");
     try {
       return await _firebaseFirestore
           .collection('recycling_point')
@@ -63,12 +69,21 @@ class ProductRepositoryImpl implements ProductRepository {
                   phone: e['phone'],
                   capacity: e['capacity'],
                   type: e['type'],
+                  distance: _calculateDistance(
+                    currentLocation,
+                    LatLng(
+                      e['lat'].toDouble(),
+                      e['lng'].toDouble(),
+                    ),
+                  ),
                   categories: List<String>.from(
                     e['categories'],
                   ), // eğer categories alanı boşsa hata alabilirsiniz.
                 ))
             .toList();
-        print(data);
+        data.sort((a, b) => a.distance.compareTo(b.distance));
+
+        print('Recycling Points: $data');
         return data;
       });
     } catch (e) {
@@ -215,5 +230,23 @@ class ProductRepositoryImpl implements ProductRepository {
     } catch (error) {
       print(error);
     }
+  }
+
+  double _calculateDistance(LatLng start, LatLng end) {
+    var earthRadius = 6371; // km
+    var dLat = _toRadians(end.latitude - start.latitude);
+    var dLng = _toRadians(end.longitude - start.longitude);
+    var a = sin(dLat / 2) * sin(dLat / 2) +
+        cos(_toRadians(start.latitude)) *
+            cos(_toRadians(end.latitude)) *
+            sin(dLng / 2) *
+            sin(dLng / 2);
+    var c = 2 * atan2(sqrt(a), sqrt(1 - a));
+    return earthRadius * c;
+  }
+
+  // Dereceyi radyana çeviren yardımcı fonksiyon
+  double _toRadians(double degree) {
+    return degree * pi / 180;
   }
 }

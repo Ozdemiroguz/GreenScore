@@ -4,7 +4,9 @@ import 'dart:typed_data';
 import 'package:camera/camera.dart';
 import 'package:greenapp/core/injections/locator.dart';
 import 'package:greenapp/features/qr/presentation/pages/qr_page.dart';
+import 'package:greenapp/services/user_service/user_service_provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 import '../../domain/models/recycling_point.dart';
@@ -44,7 +46,8 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
     state = state.copyWith(
         mobileScannerController: mobileScannerController,
         isCameraOn: true,
-        isInitialized: true);
+        isInitialized: true,
+        userData: ref.watch(userService));
   }
 
   Future<void> changeCamera() async {
@@ -158,11 +161,15 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
   }
 
   Future<void> setRecyclingPoints() async {
+    final LatLng currentLocation =
+        await ref.read(locationServiceProvier).getCurrentPosition() ??
+            const LatLng(39.782499, 30.510203);
+    // print("currentLocation: $currentLocation");
     try {
-      final tempdata =
-          await ref.read(prodcuctRepositoryProvider).getRecyclingPoints(
-                ref.read(currentCategoryProvivder.notifier).state,
-              );
+      final tempdata = await ref
+          .read(prodcuctRepositoryProvider)
+          .getRecyclingPoints(ref.read(currentCategoryProvivder.notifier).state,
+              currentLocation);
       List<RecyclingPoint> recyclingPoints = [];
 
       for (var element in tempdata) {
@@ -172,7 +179,7 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
       }
       state = state.copyWith(recyclingPoints: recyclingPoints);
     } catch (e) {
-      print('An error occurred while getting the recycling points: $e');
+      print(' An error occurred while getting the recycling points: $e');
     }
   }
 

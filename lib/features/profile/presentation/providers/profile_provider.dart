@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:greenapp/core/models/user_data.dart';
 import 'package:greenapp/services/user_service/user_service_provider.dart';
 
 import '../states/profileState/profile_state.dart';

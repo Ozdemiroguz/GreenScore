@@ -16,6 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$CameraState {
+  UserData get userData => throw _privateConstructorUsedError;
   List<CameraDescription> get cameras => throw _privateConstructorUsedError;
   CameraController? get controller => throw _privateConstructorUsedError;
   int get selectedCamera => throw _privateConstructorUsedError;
@@ -48,7 +49,8 @@ abstract class $CameraStateCopyWith<$Res> {
       _$CameraStateCopyWithImpl<$Res, CameraState>;
   @useResult
   $Res call(
-      {List<CameraDescription> cameras,
+      {UserData userData,
+      List<CameraDescription> cameras,
       CameraController? controller,
       int selectedCamera,
       MobileScannerController? mobileScannerController,
@@ -80,6 +82,7 @@ class _$CameraStateCopyWithImpl<$Res, $Val extends CameraState>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? userData = null,
     Object? cameras = null,
     Object? controller = freezed,
     Object? selectedCamera = null,
@@ -99,6 +102,10 @@ class _$CameraStateCopyWithImpl<$Res, $Val extends CameraState>
     Object? isAutamated = null,
   }) {
     return _then(_value.copyWith(
+      userData: null == userData
+          ? _value.userData
+          : userData // ignore: cast_nullable_to_non_nullable
+              as UserData,
       cameras: null == cameras
           ? _value.cameras
           : cameras // ignore: cast_nullable_to_non_nullable
@@ -180,7 +187,8 @@ abstract class _$$CameraStateImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {List<CameraDescription> cameras,
+      {UserData userData,
+      List<CameraDescription> cameras,
       CameraController? controller,
       int selectedCamera,
       MobileScannerController? mobileScannerController,
@@ -210,6 +218,7 @@ class __$$CameraStateImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? userData = null,
     Object? cameras = null,
     Object? controller = freezed,
     Object? selectedCamera = null,
@@ -229,6 +238,10 @@ class __$$CameraStateImplCopyWithImpl<$Res>
     Object? isAutamated = null,
   }) {
     return _then(_$CameraStateImpl(
+      userData: null == userData
+          ? _value.userData
+          : userData // ignore: cast_nullable_to_non_nullable
+              as UserData,
       cameras: null == cameras
           ? _value._cameras
           : cameras // ignore: cast_nullable_to_non_nullable
@@ -305,7 +318,8 @@ class __$$CameraStateImplCopyWithImpl<$Res>
 
 class _$CameraStateImpl implements _CameraState {
   _$CameraStateImpl(
-      {required final List<CameraDescription> cameras,
+      {required this.userData,
+      required final List<CameraDescription> cameras,
       required this.controller,
       required this.selectedCamera,
       required this.mobileScannerController,
@@ -325,6 +339,8 @@ class _$CameraStateImpl implements _CameraState {
       : _cameras = cameras,
         _recyclingPoints = recyclingPoints;
 
+  @override
+  final UserData userData;
   final List<CameraDescription> _cameras;
   @override
   List<CameraDescription> get cameras {
@@ -376,7 +392,7 @@ class _$CameraStateImpl implements _CameraState {
 
   @override
   String toString() {
-    return 'CameraState(cameras: $cameras, controller: $controller, selectedCamera: $selectedCamera, mobileScannerController: $mobileScannerController, isInitialized: $isInitialized, qrAndImage: $qrAndImage, barcodeValue: $barcodeValue, isScanned: $isScanned, image: $image, isFlashOn: $isFlashOn, isCameraOn: $isCameraOn, scannedInfo: $scannedInfo, isQrScanned: $isQrScanned, isRouting: $isRouting, productRecycle: $productRecycle, recyclingPoints: $recyclingPoints, isAutamated: $isAutamated)';
+    return 'CameraState(userData: $userData, cameras: $cameras, controller: $controller, selectedCamera: $selectedCamera, mobileScannerController: $mobileScannerController, isInitialized: $isInitialized, qrAndImage: $qrAndImage, barcodeValue: $barcodeValue, isScanned: $isScanned, image: $image, isFlashOn: $isFlashOn, isCameraOn: $isCameraOn, scannedInfo: $scannedInfo, isQrScanned: $isQrScanned, isRouting: $isRouting, productRecycle: $productRecycle, recyclingPoints: $recyclingPoints, isAutamated: $isAutamated)';
   }
 
   @override
@@ -384,6 +400,8 @@ class _$CameraStateImpl implements _CameraState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$CameraStateImpl &&
+            (identical(other.userData, userData) ||
+                other.userData == userData) &&
             const DeepCollectionEquality().equals(other._cameras, _cameras) &&
             (identical(other.controller, controller) ||
                 other.controller == controller) &&
@@ -422,6 +440,7 @@ class _$CameraStateImpl implements _CameraState {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      userData,
       const DeepCollectionEquality().hash(_cameras),
       controller,
       selectedCamera,
@@ -449,7 +468,8 @@ class _$CameraStateImpl implements _CameraState {
 
 abstract class _CameraState implements CameraState {
   factory _CameraState(
-      {required final List<CameraDescription> cameras,
+      {required final UserData userData,
+      required final List<CameraDescription> cameras,
       required final CameraController? controller,
       required final int selectedCamera,
       required final MobileScannerController? mobileScannerController,
@@ -467,6 +487,8 @@ abstract class _CameraState implements CameraState {
       required final List<RecyclingPoint>? recyclingPoints,
       required final bool isAutamated}) = _$CameraStateImpl;
 
+  @override
+  UserData get userData;
   @override
   List<CameraDescription> get cameras;
   @override

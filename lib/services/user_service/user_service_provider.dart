@@ -20,4 +20,8 @@ final class _UserNotifier extends Notifier<UserData> {
       state = event;
     });
   }
+
+  Future<void> dispose() async {
+    dispose();
+  }
 }

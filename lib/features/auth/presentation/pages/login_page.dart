@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greenapp/customs/custom_text_field.dart';
 import 'package:greenapp/customs/password_text_field.dart';
+import 'package:greenapp/features/home/presentation/pages/main_page.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../common.dart/overlay_wiget.dart';
@@ -132,7 +133,7 @@ class _FormButton extends ConsumerWidget {
 
             if (ref.watch(loginProvider).status == AuthStatus.authenticated) {
               Future.delayed(const Duration(seconds: 1), () {
-                context.router.replace(const AuthGateRoute());
+                context.router.replace(const MainRoute());
               });
             }
           }

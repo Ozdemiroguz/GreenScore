@@ -21,8 +21,11 @@ dependencies:
   freezed_annotation: ^2.4.1
   flutter_riverpod: ^2.5.1
   flutter_hooks: ^0.20.5
-  firebase_auth: ^4.19.5
-  cloud_firestore: ^4.17.3
+
+  firebase_auth: ^5.1.0
+  firebase_storage: ^12.0.1
+  cloud_firestore: ^5.0.1
+
   flutter_native_splash: ^2.4.0
   flutter_gemini: ^2.0.4
   flutter_dotenv: ^5.1.0
@@ -33,7 +36,8 @@ dependencies:
   qr_scanner_overlay: ^0.0.2
   flutter_map: ^7.0.0
   latlong2: ^0.9.1
-
+  country_code_picker: ^3.0.0
+  geolocator: ^12.0.0
 
 
 

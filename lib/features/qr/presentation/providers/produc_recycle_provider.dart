@@ -39,17 +39,7 @@ final class _ProductRecycleNotifier
     ref.read(prodcuctRepositoryProvider).getUserInfo().listen(
       (event) {
         state = state.copyWith(
-          userData: UserData(
-            email: event["email"],
-            name: event["name"],
-            surname: event["surname"],
-            id: event["id"],
-            naturePoint: event["nature_point"].toDouble(),
-            balance: event["balance"].toDouble(),
-            recycled: event["recycled"],
-            savedCo2: event["saved_co2"],
-            profileImage: event["profile_image"],
-          ),
+          userData: UserData.fromJson(event),
         );
       },
     );

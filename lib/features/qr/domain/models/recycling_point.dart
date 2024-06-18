@@ -8,6 +8,7 @@ class RecyclingPoint {
   int capacity;
   String address;
   String phone;
+  double distance;
 
   RecyclingPoint({
     required this.location,
@@ -17,5 +18,6 @@ class RecyclingPoint {
     required this.capacity,
     required this.address,
     required this.phone,
+    this.distance = 0.0,
   });
 }

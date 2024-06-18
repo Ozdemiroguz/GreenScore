@@ -4,7 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../../../core/injections/locator.dart';
 import '../../../../core/models/auth_epection.dart';
 import '../../../../core/models/status.dart';
-import '../../../../utils/validators.dart';
+import '../../../../utils/validators/validators.dart';
 import '../states/loginState/login_state.dart';
 
 final loginProvider = NotifierProvider.autoDispose<_LoginNotifier, LoginState>(
@@ -53,13 +53,6 @@ class _LoginNotifier extends AutoDisposeNotifier<LoginState> {
     state = state.copyWith(
       password: password,
       passwordFailure: validatePassword(password),
-    );
-  }
-
-  void testUserLogin() {
-    state = state.copyWith(
-      userName: "oguzhan1@gmail.com",
-      password: "12345678",
     );
   }
 

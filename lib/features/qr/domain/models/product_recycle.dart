@@ -9,6 +9,7 @@ class ProductRecycle {
   double nature_point;
   int decomposition_year;
   int recycling_rate;
+  double savedCo2;
 
   ProductRecycle({
     required this.id,
@@ -21,21 +22,22 @@ class ProductRecycle {
     required this.nature_point,
     required this.decomposition_year,
     required this.recycling_rate,
+    required this.savedCo2,
   });
 
   factory ProductRecycle.fromJson(Map<String, dynamic> json) {
     return ProductRecycle(
-      id: json['id'],
-      company_id: json['company_id'],
-      name: json['name'],
-      description: json['description'],
-      image: json['image'],
-      refund: json['refund'],
-      category: json['category'],
-      nature_point: json['nature_point'].toDouble(),
-      decomposition_year: json['decomposition_year'],
-      recycling_rate: json['recycling_rate'],
-    );
+        id: json['id'],
+        company_id: json['company_id'],
+        name: json['name'],
+        description: json['description'],
+        image: json['image'],
+        refund: json['refund'],
+        category: json['category'],
+        nature_point: json['nature_point'].toDouble(),
+        decomposition_year: json['decomposition_year'],
+        recycling_rate: json['recycling_rate'],
+        savedCo2: json['saved_co2']);
   }
 
   Map<String, dynamic> toJson() {

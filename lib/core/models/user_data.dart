@@ -5,11 +5,13 @@ class UserData {
   final String name;
   final String surname;
   final String id;
+  final String phone;
   final double naturePoint;
   final double balance;
   final String? profileImage;
   final double savedCo2;
   final int recycled;
+
   final List<Bag>? bag;
 
   UserData({
@@ -17,6 +19,7 @@ class UserData {
     required this.id,
     required this.name,
     required this.surname,
+    required this.phone,
     required num naturePoint,
     required num balance,
     this.profileImage,
@@ -33,6 +36,7 @@ class UserData {
         id: '',
         name: '',
         surname: '',
+        phone: '',
         naturePoint: 0,
         balance: 0,
         profileImage: '',
@@ -48,6 +52,7 @@ class UserData {
       id: json['id'],
       name: json['name'],
       surname: json['surname'],
+      phone: json['phone'],
       naturePoint: json['nature_point'],
       balance: json['balance'],
       profileImage: json['profile_image'],

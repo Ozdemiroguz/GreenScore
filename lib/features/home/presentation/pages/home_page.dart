@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:greenapp/constants/colors.dart';
 import 'package:greenapp/customs/custom_map.dart';
 import 'package:greenapp/features/home/presentation/providers/user_provider.dart';
 import 'package:greenapp/main.dart';
@@ -22,7 +23,7 @@ class HomePage extends ConsumerWidget {
               child: Column(
                 children: [
                   _UserInfo(),
-                  SizedBox(height: 40.h),
+                  SizedBox(height: 10.h),
                   _RecycleInfo(),
                   SizedBox(height: 20.h),
                   _NearbyStations(),
@@ -42,18 +43,30 @@ class _UserInfo extends ConsumerWidget {
     final state = ref.watch(homeProvider);
     return Column(
       children: [
-        SizedBox(height: 40.h),
+        SizedBox(height: 64.h),
         Container(
           padding: EdgeInsets.all(16.w),
           child: Row(
             children: [
-              Icon(Icons.person, size: 64.r),
+              Container(
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16.r),
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: state.currentUserData!.profileImage == ""
+                            ? AssetImage("assets/images/profile.jpg")
+                            : NetworkImage(
+                                state.currentUserData!.profileImage.toString(),
+                              ))),
+                width: 50.w,
+                height: 50.h,
+              ),
               SizedBox(width: 16.w),
               Text("Hi,",
                   style: TextStyle(
-                    fontSize: 24.sp,
-                    fontWeight: FontWeight.bold,
-                  )),
+                      fontSize: 28.sp,
+                      fontWeight: FontWeight.bold,
+                      color: gray)),
               Text(
                 state.currentUserData!.name,
                 style: TextStyle(
@@ -61,6 +74,8 @@ class _UserInfo extends ConsumerWidget {
                   fontWeight: FontWeight.bold,
                 ),
               ),
+              Spacer(),
+              Icon(Icons.notifications, size: 28.r, color: gray),
             ],
           ),
         ),

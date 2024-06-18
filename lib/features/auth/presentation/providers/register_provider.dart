@@ -5,7 +5,7 @@ import '../../../../core/injections/locator.dart';
 import '../../../../core/models/auth_epection.dart';
 import '../../../../core/models/status.dart';
 import '../../../../core/models/user_data.dart';
-import '../../../../utils/validators.dart';
+import '../../../../utils/validators/validators.dart';
 import '../states/registerState/register_state.dart';
 
 final registerProvider =
@@ -36,6 +36,7 @@ class _RegisterNotifier extends AutoDisposeNotifier<RegisterState> {
               profileImage: "",
               bag: [],
               recycled: 0,
+              phone: "",
             ),
           );
 

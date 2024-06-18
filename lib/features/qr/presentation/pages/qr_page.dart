@@ -1,9 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greenapp/constants/colors.dart';
 import 'package:greenapp/customs/custom_button.dart';
+import 'package:greenapp/customs/custom_map.dart';
 import 'package:greenapp/features/qr/presentation/providers/camera_provider.dart';
 import 'package:greenapp/router/router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -47,49 +49,32 @@ class _QrPageState extends ConsumerState<QrPage> with WidgetsBindingObserver {
                           ? Expanded(
                               child: CameraPreview(state.controller!),
                             )
-                          : Expanded(
-                              child: MobileScanner(
-                                controller: state.mobileScannerController!,
-                                onDetect: (capture) {
-                                  onDetect(
-                                      capture, state.mobileScannerController!);
-                                },
-                              ),
-                            ),
+                          : state.isQrScanned
+                              ? _QrScannedImage()
+                              : Expanded(
+                                  child: MobileScanner(
+                                    controller: state.mobileScannerController!,
+                                    onDetect: (capture) {
+                                      onDetect(capture,
+                                          state.mobileScannerController!);
+                                    },
+                                  ),
+                                ),
                     ],
                   )
                 : const Center(
                     child: Text("Camera is not available"),
                   ),
             Padding(
-              padding: const EdgeInsets.only(bottom: 150),
+              padding:
+                  EdgeInsets.only(bottom: state.isQrScanned ? 250.h : 150.h),
               child: QRScannerOverlay(
                 borderColor: primary,
-                overlayColor:
-                    const Color.fromARGB(255, 255, 255, 255).withOpacity(0.5),
-                scanAreaSize: Size(300.r, 500.r),
+                overlayColor: Colors.grey.withOpacity(0.4),
+                scanAreaSize:
+                    state.isQrScanned ? Size(300.w, 400.h) : Size(300.r, 500.r),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.only(
-                top: 50,
-                left: 20,
-              ),
-              child: Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      ref.read(cameraProvider.notifier).setCameraOn();
-                      state.controller?.dispose();
-                      state.mobileScannerController?.dispose();
-                    },
-                    icon: const Icon(Icons.flash_on),
-                    iconSize: 32.0,
-                    color: white,
-                  )
-                ],
-              ),
-            )
           ],
         ),
         bottomSheet: _BottomSheetPart(),
@@ -133,7 +118,7 @@ class _BottomSheetPart extends ConsumerWidget {
           maxHeight: state.isScanned
               ? 400.h
               : state.isQrScanned
-                  ? 800.h
+                  ? 330.h
                   : 200.h),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -141,6 +126,7 @@ class _BottomSheetPart extends ConsumerWidget {
           topRight: Radius.circular(12.r),
         ),
       ),
+      backgroundColor: white,
       shadowColor: black,
       elevation: 10,
       enableDrag: false,
@@ -319,33 +305,117 @@ class _QrScannedInfo extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cameraProvider);
     return SingleChildScrollView(
-      child: Column(
-        children: [
-          state.productRecycle == null
-              ? CircularProgressIndicator.adaptive()
-              : Column(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.w),
+      child: state.productRecycle == null
+          ? const CircularProgressIndicator.adaptive()
+          : Column(
+              children: [
+                Row(
                   children: [
-                    Image.network(state.productRecycle!.image),
-                    Text(state.productRecycle!.name,
-                        style:
-                            Theme.of(context).textTheme.displayLarge!.copyWith(
-                                  fontSize: 30.sp,
-                                )),
-                    Text('Price: ${state.productRecycle!.refund}₺'),
-                    Text('Description: ${state.productRecycle!.description}'),
-                    _RecyclingPointsPart(),
+                    Text(
+                      state.productRecycle!.name,
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                          fontSize: 30.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 4.h,
+                    ),
+                    SizedBox(
+                        height: 25.h,
+                        width: 25.h,
+                        child: Image.asset("assets/images/recyclelogo.png")),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        ref.watch(cameraProvider.notifier).resetScanQr();
+                      },
+                      child: Icon(
+                        Icons.refresh,
+                        size: 32.r,
+                      ),
+                    )
                   ],
                 ),
-          CustomButton(
-            onPressed: () {
-              ref.read(cameraProvider.notifier).resetScanQr();
-            },
-            buttonContent: Row(
-              children: [Text("Again"), Icon(Icons.refresh)],
+                Container(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.w, vertical: 28.h),
+                  decoration: BoxDecoration(
+                      border: Border.all(width: 1, color: Colors.grey),
+                      borderRadius: BorderRadius.all(Radius.circular(16.r))),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      _QrInfoLabel(
+                          title: "Material",
+                          value: state.productRecycle!.category),
+                      _QrInfoLabel(
+                        value:
+                            '${state.productRecycle!.savedCo2.toStringAsFixed(0)}g',
+                        titleWidget: Text.rich(TextSpan(
+                            text: "Saved Co",
+                            style: Theme.of(context)
+                                .textTheme
+                                .labelSmall!
+                                .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                            children: [
+                              TextSpan(
+                                  text: "2", style: TextStyle(fontSize: 7.sp))
+                            ])),
+                      ),
+                      _QrInfoLabel(
+                        value: state.productRecycle!.nature_point
+                            .toStringAsFixed(0),
+                        title: "Nature Point",
+                      ),
+                      _QrInfoLabel(
+                          title: "Refund",
+                          value: '${state.productRecycle!.refund.toString()}€')
+                    ],
+                  ),
+                ),
+                _RecyclingPointsPart(),
+              ],
             ),
-          ),
-        ],
-      ),
+    );
+  }
+}
+
+class _QrInfoLabel extends ConsumerWidget {
+  final String? title;
+  final Widget? titleWidget;
+  final String value;
+
+  _QrInfoLabel({
+    this.title,
+    required this.value,
+    this.titleWidget,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(cameraProvider);
+    return Column(
+      children: [
+        titleWidget ??
+            Text(
+              title!,
+              style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+            ),
+        SizedBox(
+          height: 8.h,
+        ),
+        Text(
+          value,
+          style: Theme.of(context)
+              .textTheme
+              .displayMedium!
+              .copyWith(fontWeight: FontWeight.bold),
+        )
+      ],
     );
   }
 }
@@ -354,77 +424,126 @@ class _RecyclingPointsPart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cameraProvider);
-    print("Recycling Points: ${state.recyclingPoints}");
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 16.w,
-        vertical: 12.h,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: state.recyclingPoints!
-              .map((e) => GestureDetector(
-                    onTap: () {
-                      currentlocation = e.location;
-
-                      ref.read(currentLocationProvider.notifier).state =
-                          e.location;
-
-                      ref.read(currentCategoryProvivder.notifier).state =
-                          state.productRecycle!.category;
-                      ref.read(mapProvider.notifier).init();
-
-                      context.router.replaceAll([
-                        MapRoute(),
-                      ]);
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(
-                        vertical: 12.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: gray.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(12.r),
-                      ),
-                      margin: EdgeInsets.symmetric(
-                        vertical: 8.h,
-                      ),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Icon(Icons.location_on,
-                              color: Colors.blue, size: 36.r),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(e.title,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayLarge!
-                                      .copyWith(fontSize: 22.sp, color: black)),
-
-                              //categories of recycling points
-                              SizedBox(
-                                width: 300.w,
-                                child: Text(e.address,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium!
-                                        .copyWith(
-                                            fontSize: 11.sp, color: gray)),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
+    return SizedBox(
+      width: double.infinity,
+      child: ListView.separated(
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          // Build your list item here
+          return GestureDetector(
+            onTap: () {
+              currentlocation = state.recyclingPoints![index].location;
+              ref.read(currentLocationProvider.notifier).state =
+                  state.recyclingPoints![index].location;
+              ref.read(currentCategoryProvivder.notifier).state =
+                  state.productRecycle!.category;
+              ref.read(mapProvider.notifier).init();
+              context.router.replaceAll([
+                MapRoute(),
+              ]);
+            },
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                vertical: 12.h,
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              margin: EdgeInsets.symmetric(
+                vertical: 8.h,
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  _MapView(
+                    location: state.recyclingPoints![index].location,
+                  ),
+                  SizedBox(
+                    width: 200.w,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        Text(state.recyclingPoints![index].title,
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayLarge!
+                                .copyWith(fontSize: 22.sp, color: black)),
+                      ],
                     ),
-                  ))
-              .toList(),
-        ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+        separatorBuilder: (context, index) {
+          // Build your separator here
+          return SizedBox(height: 0.h);
+        },
+        itemCount: state.recyclingPoints!.length,
       ),
     );
+    // Column(
+    //   children: state.recyclingPoints!
+    //       .map((e) => GestureDetector(
+    //             onTap: () {
+    //               currentlocation = e.location;
+
+    //               ref.read(currentLocationProvider.notifier).state = e.location;
+
+    //               ref.read(currentCategoryProvivder.notifier).state =
+    //                   state.productRecycle!.category;
+    //               ref.read(mapProvider.notifier).init();
+
+    //               context.router.replaceAll([
+    //                 MapRoute(),
+    //               ]);
+    //             },
+    //             child: Container(
+    //               padding: EdgeInsets.symmetric(
+    //                 vertical: 12.h,
+    //               ),
+    //               decoration: BoxDecoration(
+    //                 color: gray.withOpacity(0.2),
+    //                 borderRadius: BorderRadius.circular(12.r),
+    //               ),
+    //               margin: EdgeInsets.symmetric(
+    //                 vertical: 8.h,
+    //               ),
+    //               child: Row(
+    //                 crossAxisAlignment: CrossAxisAlignment.center,
+    //                 children: [
+    //                   Icon(Icons.location_on, color: Colors.blue, size: 36.r),
+    //                   Column(
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: [
+    //                       Text(e.title,
+    //                           style: Theme.of(context)
+    //                               .textTheme
+    //                               .displayLarge!
+    //                               .copyWith(fontSize: 22.sp, color: black)),
+
+    //                       //categories of recycling points
+    //                       SizedBox(
+    //                         width: 300.w,
+    //                         child: Text(e.address,
+    //                             overflow: TextOverflow.ellipsis,
+    //                             style: Theme.of(context)
+    //                                 .textTheme
+    //                                 .displayMedium!
+    //                                 .copyWith(fontSize: 11.sp, color: gray)),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //           ))
+    //       .toList(),
+    // );
   }
 }
 
@@ -477,6 +596,65 @@ class _AutomatedRecyclingPoints extends ConsumerWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _QrScannedImage extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(cameraProvider);
+    return Expanded(
+      child: SizedBox(
+        width: double.infinity,
+        child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.network(
+                  alignment: Alignment.center,
+                  width: 300.w,
+                  height: 400.h,
+                  fit: BoxFit.cover,
+                  state.productRecycle!.image),
+              SizedBox(
+                height: 250.h,
+              )
+            ]),
+      ),
+    );
+  }
+}
+
+class _MapView extends ConsumerWidget {
+  final LatLng location;
+  const _MapView({required this.location});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(cameraProvider);
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(12.r),
+      child: SizedBox(
+        width: 100.w,
+        height: 100.h,
+        child: CustomMap(
+          active: false,
+          initialCenter: location,
+          markers: [
+            Marker(
+              width: 40.r,
+              height: 40.r,
+              point: location,
+              child: Icon(
+                Icons.location_on,
+                color: green,
+                size: 36.r,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

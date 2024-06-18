@@ -7,15 +7,17 @@ class CustomMap extends HookWidget {
   final TileLayer? tileLayer;
   final LatLng? initialCenter;
   final double? initialZoom;
+  final bool? active;
 
   final List<Marker> markers;
   final List<Polyline>? polylines;
   final List<Polygon>? polygons;
   final List<CircleMarker>? circleMarkers;
   final MapOptions? options;
-  final MapController mapController;
+  final MapController? mapController;
 
   const CustomMap({
+    this.active,
     this.tileLayer,
     this.initialCenter,
     this.initialZoom,
@@ -24,14 +26,18 @@ class CustomMap extends HookWidget {
     this.polygons,
     this.circleMarkers,
     this.options,
-    required this.mapController,
+    this.mapController,
   });
 
   @override
   Widget build(BuildContext context) {
     return FlutterMap(
-      mapController: mapController,
+      mapController: mapController ?? MapController(),
       options: MapOptions(
+        interactionOptions: InteractionOptions(
+          flags:
+              active ?? true ? InteractiveFlag.all : InteractiveFlag.pinchZoom,
+        ),
         initialCenter: initialCenter ??
             const LatLng(
               39.782499,

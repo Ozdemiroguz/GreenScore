@@ -24,16 +24,8 @@ class HomeRepositoryImpl implements HomeRepository {
         .map((snapshot) {
       try {
         final userData = snapshot.docs
-            .map((data) => UserData(
-                  id: data['id'],
-                  name: data['name'],
-                  surname: data['surname'],
-                  email: data['email'],
-                  naturePoint: data['nature_point'],
-                  balance: data['balance'],
-                  profileImage: data['profile_image'],
-                  recycled: data['recycled'],
-                  savedCo2: data['saved_co2'],
+            .map((data) => UserData.fromJson(
+                  data.data(),
                 ))
             .toList();
         return userData;
@@ -53,17 +45,7 @@ class HomeRepositoryImpl implements HomeRepository {
         .get()
         .then((value) {
       final data = value.data();
-      return UserData(
-        id: data!['id'],
-        name: data['name'],
-        surname: data['surname'],
-        email: data['email'],
-        naturePoint: data['nature_point'],
-        balance: data['balance'],
-        profileImage: data['profile_image'],
-        recycled: data['recycled'],
-        savedCo2: data['saved_co2'],
-      );
+      return UserData.fromJson(data!);
     });
   }
 
@@ -75,17 +57,7 @@ class HomeRepositoryImpl implements HomeRepository {
         .snapshots()
         .map((snapshot) {
       final data = snapshot.data();
-      return UserData(
-        id: data!['id'],
-        name: data['name'],
-        surname: data['surname'],
-        email: data['email'],
-        naturePoint: data['nature_point'],
-        balance: data['balance'],
-        profileImage: data['profile_image'],
-        recycled: data['recycled'],
-        savedCo2: data['saved_co2'],
-      );
+      return UserData.fromJson(data!);
     });
   }
 

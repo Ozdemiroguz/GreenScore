@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../../../core/models/status.dart';
-import '../../../../../core/models/validationResult.dart';
+import '../../../../../core/models/validation_result.dart';
 
 part 'login_state.freezed.dart';
 

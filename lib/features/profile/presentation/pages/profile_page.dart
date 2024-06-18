@@ -1,12 +1,15 @@
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:greenapp/constants/colors.dart';
+import 'package:greenapp/core/injections/locator.dart';
 import 'package:greenapp/customs/custom_app_bar.dart';
 import 'package:greenapp/customs/custom_button.dart';
 import 'package:greenapp/features/profile/presentation/providers/profile_provider.dart';
 import 'package:greenapp/router/router.dart';
+import 'package:greenapp/services/user_service/user_service_provider.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 @RoutePage()
@@ -143,7 +146,7 @@ class _RouteContainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return GestureDetector(
-      onTap: () {},
+      onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 8.w),
         child: Row(
@@ -179,9 +182,9 @@ class _FirstContainer extends StatelessWidget {
   }
 }
 
-class _SecondContainer extends StatelessWidget {
+class _SecondContainer extends ConsumerWidget {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       children: [
         _RouteContainer(
@@ -189,8 +192,17 @@ class _SecondContainer extends StatelessWidget {
         _RouteContainer(
             icon: Icons.question_mark_outlined,
             title: "Help & Support",
-            onTap: () {}),
-        _RouteContainer(icon: Icons.logout, title: "Logout", onTap: () {}),
+            onTap: () {
+              print("logout");
+            }),
+        _RouteContainer(
+            icon: Icons.logout,
+            title: "Logout",
+            onTap: () {
+              print("logout");
+              ref.read(authRepositoryProvider).signOut();
+              context.router.replaceAll([const LoginRoute()]);
+            }),
       ],
     );
   }

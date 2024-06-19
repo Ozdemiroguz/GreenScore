@@ -30,6 +30,8 @@ mixin _$CameraState {
   bool get isFlashOn => throw _privateConstructorUsedError;
   bool get isCameraOn => throw _privateConstructorUsedError;
   String get scannedInfo => throw _privateConstructorUsedError;
+  String get scannedAndParsedInfo => throw _privateConstructorUsedError;
+  ImageScanInfo? get imageScanInfo => throw _privateConstructorUsedError;
   bool get isQrScanned => throw _privateConstructorUsedError;
   bool get isRouting => throw _privateConstructorUsedError;
   ProductRecycle? get productRecycle => throw _privateConstructorUsedError;
@@ -62,6 +64,8 @@ abstract class $CameraStateCopyWith<$Res> {
       bool isFlashOn,
       bool isCameraOn,
       String scannedInfo,
+      String scannedAndParsedInfo,
+      ImageScanInfo? imageScanInfo,
       bool isQrScanned,
       bool isRouting,
       ProductRecycle? productRecycle,
@@ -95,6 +99,8 @@ class _$CameraStateCopyWithImpl<$Res, $Val extends CameraState>
     Object? isFlashOn = null,
     Object? isCameraOn = null,
     Object? scannedInfo = null,
+    Object? scannedAndParsedInfo = null,
+    Object? imageScanInfo = freezed,
     Object? isQrScanned = null,
     Object? isRouting = null,
     Object? productRecycle = freezed,
@@ -154,6 +160,14 @@ class _$CameraStateCopyWithImpl<$Res, $Val extends CameraState>
           ? _value.scannedInfo
           : scannedInfo // ignore: cast_nullable_to_non_nullable
               as String,
+      scannedAndParsedInfo: null == scannedAndParsedInfo
+          ? _value.scannedAndParsedInfo
+          : scannedAndParsedInfo // ignore: cast_nullable_to_non_nullable
+              as String,
+      imageScanInfo: freezed == imageScanInfo
+          ? _value.imageScanInfo
+          : imageScanInfo // ignore: cast_nullable_to_non_nullable
+              as ImageScanInfo?,
       isQrScanned: null == isQrScanned
           ? _value.isQrScanned
           : isQrScanned // ignore: cast_nullable_to_non_nullable
@@ -200,6 +214,8 @@ abstract class _$$CameraStateImplCopyWith<$Res>
       bool isFlashOn,
       bool isCameraOn,
       String scannedInfo,
+      String scannedAndParsedInfo,
+      ImageScanInfo? imageScanInfo,
       bool isQrScanned,
       bool isRouting,
       ProductRecycle? productRecycle,
@@ -231,6 +247,8 @@ class __$$CameraStateImplCopyWithImpl<$Res>
     Object? isFlashOn = null,
     Object? isCameraOn = null,
     Object? scannedInfo = null,
+    Object? scannedAndParsedInfo = null,
+    Object? imageScanInfo = freezed,
     Object? isQrScanned = null,
     Object? isRouting = null,
     Object? productRecycle = freezed,
@@ -290,6 +308,14 @@ class __$$CameraStateImplCopyWithImpl<$Res>
           ? _value.scannedInfo
           : scannedInfo // ignore: cast_nullable_to_non_nullable
               as String,
+      scannedAndParsedInfo: null == scannedAndParsedInfo
+          ? _value.scannedAndParsedInfo
+          : scannedAndParsedInfo // ignore: cast_nullable_to_non_nullable
+              as String,
+      imageScanInfo: freezed == imageScanInfo
+          ? _value.imageScanInfo
+          : imageScanInfo // ignore: cast_nullable_to_non_nullable
+              as ImageScanInfo?,
       isQrScanned: null == isQrScanned
           ? _value.isQrScanned
           : isQrScanned // ignore: cast_nullable_to_non_nullable
@@ -331,6 +357,8 @@ class _$CameraStateImpl implements _CameraState {
       required this.isFlashOn,
       required this.isCameraOn,
       required this.scannedInfo,
+      required this.scannedAndParsedInfo,
+      required this.imageScanInfo,
       required this.isQrScanned,
       required this.isRouting,
       required this.productRecycle,
@@ -372,6 +400,10 @@ class _$CameraStateImpl implements _CameraState {
   @override
   final String scannedInfo;
   @override
+  final String scannedAndParsedInfo;
+  @override
+  final ImageScanInfo? imageScanInfo;
+  @override
   final bool isQrScanned;
   @override
   final bool isRouting;
@@ -392,7 +424,7 @@ class _$CameraStateImpl implements _CameraState {
 
   @override
   String toString() {
-    return 'CameraState(userData: $userData, cameras: $cameras, controller: $controller, selectedCamera: $selectedCamera, mobileScannerController: $mobileScannerController, isInitialized: $isInitialized, qrAndImage: $qrAndImage, barcodeValue: $barcodeValue, isScanned: $isScanned, image: $image, isFlashOn: $isFlashOn, isCameraOn: $isCameraOn, scannedInfo: $scannedInfo, isQrScanned: $isQrScanned, isRouting: $isRouting, productRecycle: $productRecycle, recyclingPoints: $recyclingPoints, isAutamated: $isAutamated)';
+    return 'CameraState(userData: $userData, cameras: $cameras, controller: $controller, selectedCamera: $selectedCamera, mobileScannerController: $mobileScannerController, isInitialized: $isInitialized, qrAndImage: $qrAndImage, barcodeValue: $barcodeValue, isScanned: $isScanned, image: $image, isFlashOn: $isFlashOn, isCameraOn: $isCameraOn, scannedInfo: $scannedInfo, scannedAndParsedInfo: $scannedAndParsedInfo, imageScanInfo: $imageScanInfo, isQrScanned: $isQrScanned, isRouting: $isRouting, productRecycle: $productRecycle, recyclingPoints: $recyclingPoints, isAutamated: $isAutamated)';
   }
 
   @override
@@ -425,6 +457,10 @@ class _$CameraStateImpl implements _CameraState {
                 other.isCameraOn == isCameraOn) &&
             (identical(other.scannedInfo, scannedInfo) ||
                 other.scannedInfo == scannedInfo) &&
+            (identical(other.scannedAndParsedInfo, scannedAndParsedInfo) ||
+                other.scannedAndParsedInfo == scannedAndParsedInfo) &&
+            (identical(other.imageScanInfo, imageScanInfo) ||
+                other.imageScanInfo == imageScanInfo) &&
             (identical(other.isQrScanned, isQrScanned) ||
                 other.isQrScanned == isQrScanned) &&
             (identical(other.isRouting, isRouting) ||
@@ -438,26 +474,29 @@ class _$CameraStateImpl implements _CameraState {
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      userData,
-      const DeepCollectionEquality().hash(_cameras),
-      controller,
-      selectedCamera,
-      mobileScannerController,
-      isInitialized,
-      qrAndImage,
-      barcodeValue,
-      isScanned,
-      const DeepCollectionEquality().hash(image),
-      isFlashOn,
-      isCameraOn,
-      scannedInfo,
-      isQrScanned,
-      isRouting,
-      productRecycle,
-      const DeepCollectionEquality().hash(_recyclingPoints),
-      isAutamated);
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        userData,
+        const DeepCollectionEquality().hash(_cameras),
+        controller,
+        selectedCamera,
+        mobileScannerController,
+        isInitialized,
+        qrAndImage,
+        barcodeValue,
+        isScanned,
+        const DeepCollectionEquality().hash(image),
+        isFlashOn,
+        isCameraOn,
+        scannedInfo,
+        scannedAndParsedInfo,
+        imageScanInfo,
+        isQrScanned,
+        isRouting,
+        productRecycle,
+        const DeepCollectionEquality().hash(_recyclingPoints),
+        isAutamated
+      ]);
 
   @JsonKey(ignore: true)
   @override
@@ -481,6 +520,8 @@ abstract class _CameraState implements CameraState {
       required final bool isFlashOn,
       required final bool isCameraOn,
       required final String scannedInfo,
+      required final String scannedAndParsedInfo,
+      required final ImageScanInfo? imageScanInfo,
       required final bool isQrScanned,
       required final bool isRouting,
       required final ProductRecycle? productRecycle,
@@ -513,6 +554,10 @@ abstract class _CameraState implements CameraState {
   bool get isCameraOn;
   @override
   String get scannedInfo;
+  @override
+  String get scannedAndParsedInfo;
+  @override
+  ImageScanInfo? get imageScanInfo;
   @override
   bool get isQrScanned;
   @override

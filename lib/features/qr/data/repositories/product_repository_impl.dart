@@ -53,7 +53,7 @@ class ProductRepositoryImpl implements ProductRepository {
     LatLng currentLocation,
   ) async {
     // print("currentCategory: $currentCategory");
-    // print("currentLocation: $currentLocation");
+    print("currentLocation: $currentLocation");
     try {
       return await _firebaseFirestore
           .collection('recycling_point')
@@ -242,7 +242,9 @@ class ProductRepositoryImpl implements ProductRepository {
             sin(dLng / 2) *
             sin(dLng / 2);
     var c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    return earthRadius * c;
+    final distance = earthRadius * c;
+    print('Distance: $distance');
+    return distance;
   }
 
   // Dereceyi radyana çeviren yardımcı fonksiyon

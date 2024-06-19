@@ -1,6 +1,7 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:greenapp/features/delivery_point/presentation/delivery_point_page.dart';
 import 'package:greenapp/features/profile/presentation/pages/profile_page.dart';
+import 'package:greenapp/features/qr/presentation/pages/recycling_map_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/register_page.dart';
 import '../features/home/presentation/pages/main_page.dart';
@@ -46,5 +47,6 @@ class AppRouter extends _$AppRouter {
         AutoRoute(page: ProductPreviewRoute.page),
         AutoRoute(page: LeaderBoardRoute.page),
         AutoRoute(page: EditProfileRoute.page),
+        AutoRoute(page: RecyclingMapRoute.page),
       ];
 }

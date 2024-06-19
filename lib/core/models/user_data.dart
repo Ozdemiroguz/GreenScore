@@ -1,4 +1,5 @@
 import 'package:greenapp/core/models/bag.dart';
+import 'package:latlong2/latlong.dart';
 
 class UserData {
   final String email;
@@ -13,6 +14,7 @@ class UserData {
   final int recycled;
 
   final List<Bag>? bag;
+  final LatLng? location;
 
   UserData({
     required this.email,
@@ -26,6 +28,7 @@ class UserData {
     required num savedCo2,
     required this.recycled,
     this.bag,
+    this.location,
   })  : naturePoint = naturePoint.toDouble(),
         balance = balance.toDouble(),
         savedCo2 = savedCo2.toDouble();
@@ -61,6 +64,36 @@ class UserData {
       bag: json['bag'] != null
           ? List<Bag>.from(json['bag'].map((x) => Bag.fromJson(x)))
           : null,
+    );
+  }
+  //copy with
+  UserData copyWith({
+    String? email,
+    String? id,
+    String? name,
+    String? surname,
+    String? phone,
+    double? naturePoint,
+    double? balance,
+    String? profileImage,
+    double? savedCo2,
+    int? recycled,
+    List<Bag>? bag,
+    LatLng? location,
+  }) {
+    return UserData(
+      email: email ?? this.email,
+      id: id ?? this.id,
+      name: name ?? this.name,
+      surname: surname ?? this.surname,
+      phone: phone ?? this.phone,
+      naturePoint: naturePoint ?? this.naturePoint,
+      balance: balance ?? this.balance,
+      profileImage: profileImage ?? this.profileImage,
+      savedCo2: savedCo2 ?? this.savedCo2,
+      recycled: recycled ?? this.recycled,
+      bag: bag ?? this.bag,
+      location: location ?? this.location,
     );
   }
 }

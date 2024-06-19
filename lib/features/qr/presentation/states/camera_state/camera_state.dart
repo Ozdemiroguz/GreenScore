@@ -2,6 +2,7 @@ import 'package:camera/camera.dart';
 import 'package:flutter/services.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:greenapp/core/models/user_data.dart';
+import 'package:greenapp/features/qr/domain/models/image_scan_info.dart';
 import 'package:greenapp/features/qr/domain/models/product_recycle.dart';
 import 'package:greenapp/features/qr/domain/models/recycling_point.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
@@ -24,6 +25,8 @@ class CameraState with _$CameraState {
     required bool isFlashOn,
     required bool isCameraOn,
     required String scannedInfo,
+    required String scannedAndParsedInfo,
+    required ImageScanInfo? imageScanInfo,
     required bool isQrScanned,
     required bool isRouting,
     required ProductRecycle? productRecycle,
@@ -45,6 +48,8 @@ class CameraState with _$CameraState {
         isFlashOn: false,
         isCameraOn: false,
         scannedInfo: '',
+        scannedAndParsedInfo: '',
+        imageScanInfo: null,
         isQrScanned: false,
         isRouting: false,
         productRecycle: null,

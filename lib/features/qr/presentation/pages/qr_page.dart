@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -37,7 +39,7 @@ class _QrPageState extends ConsumerState<QrPage> with WidgetsBindingObserver {
 
     return PopScope(
       onPopInvoked: (didPop) => {
-        if (didPop) {state.mobileScannerController!.dispose()}
+        if (didPop) {ref.read(cameraProvider.notifier).dispose()}
       },
       child: Scaffold(
         body: Stack(
@@ -46,11 +48,15 @@ class _QrPageState extends ConsumerState<QrPage> with WidgetsBindingObserver {
                 ? Column(
                     children: [
                       !state.qrAndImage
-                          ? Expanded(
-                              child: CameraPreview(state.controller!),
-                            )
+                          ? state.image == null
+                              ? Expanded(
+                                  child: CameraPreview(state.controller!),
+                                )
+                              : _QrScannedImage(bufferImage: state.image)
                           : state.isQrScanned
-                              ? _QrScannedImage()
+                              ? _QrScannedImage(
+                                  image: state.productRecycle!.image,
+                                )
                               : Expanded(
                                   child: MobileScanner(
                                     controller: state.mobileScannerController!,
@@ -66,13 +72,15 @@ class _QrPageState extends ConsumerState<QrPage> with WidgetsBindingObserver {
                     child: Text("Camera is not available"),
                   ),
             Padding(
-              padding:
-                  EdgeInsets.only(bottom: state.isQrScanned ? 250.h : 150.h),
+              padding: EdgeInsets.only(
+                  bottom:
+                      (state.isQrScanned || state.isScanned) ? 250.h : 150.h),
               child: QRScannerOverlay(
                 borderColor: primary,
                 overlayColor: Colors.grey.withOpacity(0.4),
-                scanAreaSize:
-                    state.isQrScanned ? Size(300.w, 400.h) : Size(300.r, 500.r),
+                scanAreaSize: (state.isQrScanned || state.isScanned)
+                    ? Size(300.w, 400.h)
+                    : Size(300.r, 500.r),
               ),
             ),
           ],
@@ -114,12 +122,9 @@ class _BottomSheetPart extends ConsumerWidget {
     final state = ref.watch(cameraProvider);
     return BottomSheet(
       constraints: BoxConstraints(
-          minHeight: 200.h,
-          maxHeight: state.isScanned
-              ? 400.h
-              : state.isQrScanned
-                  ? 330.h
-                  : 200.h),
+          minHeight: state.isScanned ? 330.h : 200.h,
+          maxHeight:
+              (state.image != null || state.isQrScanned) ? 330.h : 200.h),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(12.r),
@@ -287,15 +292,87 @@ class _ImageScanndInfo extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cameraProvider);
-    return Column(
-      children: [
-        Text("Scanned Image Descp: ${state.scannedInfo}"),
-        IconButton(
-            onPressed: () {
-              ref.read(cameraProvider.notifier).resetScanImages();
-            },
-            icon: Icon(Icons.refresh_sharp))
-      ],
+
+    return SingleChildScrollView(
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 16.h),
+      child: state.imageScanInfo == null
+          ? Column(
+              children: [
+                Text("Scanning Image",
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontSize: 20.sp)),
+                const CircularProgressIndicator.adaptive(),
+              ],
+            )
+          : Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      state.imageScanInfo!.title,
+                      style: Theme.of(context).textTheme.displayLarge!.copyWith(
+                          fontSize: 30.sp, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      width: 4.h,
+                    ),
+                    state.imageScanInfo!.recycleBool
+                        ? SizedBox(
+                            height: 30.h,
+                            width: 30.h,
+                            child: Image.asset("assets/images/recyclelogo.png"))
+                        : SizedBox(
+                            height: 30.h,
+                            width: 30.h,
+                            child: Image.asset("assets/images/notrecycle.png")),
+                    Spacer(),
+                    IconButton(
+                        onPressed: () {
+                          ref.read(cameraProvider.notifier).resetScanImages();
+                        },
+                        icon: Icon(Icons.refresh_sharp)),
+                  ],
+                ),
+                SizedBox(
+                  height: 8.h,
+                ),
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Description: ${state.imageScanInfo!.desc}',
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayMedium!
+                        .copyWith(fontSize: 16.sp),
+                  ),
+                ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                state.imageScanInfo!.recycleBool
+                    ? SizedBox(
+                        height: 16.h,
+                      )
+                    : Column(
+                        children: [
+                          Text(
+                            "This product is not recyclable",
+                            style: Theme.of(context)
+                                .textTheme
+                                .displayMedium!
+                                .copyWith(fontSize: 20.sp, color: red),
+                          ),
+                          SizedBox(
+                            width: 8.w,
+                          ),
+                          Icon(Icons.error, color: red, size: 96.r),
+                        ],
+                      )
+              ],
+            ),
     );
   }
 }
@@ -375,6 +452,34 @@ class _QrScannedInfo extends ConsumerWidget {
                     ],
                   ),
                 ),
+                SizedBox(
+                  height: 16.h,
+                ),
+                Row(children: [
+                  Text(
+                    "Recycling Points",
+                    style: Theme.of(context)
+                        .textTheme
+                        .displayLarge!
+                        .copyWith(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                  ),
+                  Spacer(),
+                  GestureDetector(
+                    onTap: () {
+                      context.router.push(MapRoute());
+                    },
+                    child: Text(
+                      "See All",
+                      style: Theme.of(context)
+                          .textTheme
+                          .displayMedium!
+                          .copyWith(fontSize: 14.sp, color: primary),
+                    ),
+                  )
+                ]),
+                SizedBox(
+                  height: 16.h,
+                ),
                 _RecyclingPointsPart(),
               ],
             ),
@@ -439,20 +544,18 @@ class _RecyclingPointsPart extends ConsumerWidget {
               ref.read(currentCategoryProvivder.notifier).state =
                   state.productRecycle!.category;
               ref.read(mapProvider.notifier).init();
-              context.router.replaceAll([
-                MapRoute(),
-              ]);
+              context.router.replaceAll([]);
             },
             child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.symmetric(
-                vertical: 12.h,
+              height: 132.h,
+              padding: EdgeInsets.only(
+                top: 16.h,
+                left: 16.w,
+                bottom: 16.h,
               ),
               decoration: BoxDecoration(
+                color: gray.withOpacity(0.2),
                 borderRadius: BorderRadius.circular(12.r),
-              ),
-              margin: EdgeInsets.symmetric(
-                vertical: 8.h,
               ),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -460,17 +563,86 @@ class _RecyclingPointsPart extends ConsumerWidget {
                   _MapView(
                     location: state.recyclingPoints![index].location,
                   ),
+                  SizedBox(width: 15.w),
                   SizedBox(
-                    width: 200.w,
+                    width: 230.w,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Text(state.recyclingPoints![index].title,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge!
-                                .copyWith(fontSize: 22.sp, color: black)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  "${state.recyclingPoints![index].title}",
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayLarge!
+                                      .copyWith(fontSize: 20.sp, color: black)),
+                            ),
+                            Text(
+                              "${state.recyclingPoints![index].distance.toStringAsFixed(0)} km",
+                              overflow: TextOverflow.ellipsis,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium!
+                                  .copyWith(fontSize: 12.sp, color: green),
+                            ),
+                            SizedBox(
+                              width: 16.w,
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          child: Text(
+                              "${state.recyclingPoints![index].address}",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayMedium!
+                                  .copyWith(fontSize: 11.sp, color: gray)),
+                        ),
+                        Spacer(),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: state.recyclingPoints![index].categories
+                                .map(
+                                  (e) => Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 8.w, vertical: 4.h),
+                                    margin: EdgeInsets.only(right: 8.w),
+                                    decoration: BoxDecoration(
+                                      color: e == "plastic"
+                                          ? orange.withOpacity(0.8)
+                                          : e == "glass"
+                                              ? primary.withOpacity(0.8)
+                                              : e == "paper"
+                                                  ? Colors.blue[800]
+                                                      ?.withOpacity(0.8)
+                                                  : e == "metal"
+                                                      ? Colors.yellow[800]!
+                                                          .withOpacity(0.8)
+                                                      : e == "e-waste"
+                                                          ? red.withOpacity(0.8)
+                                                          : Colors.purple[800]!
+                                                              .withOpacity(0.8),
+                                      borderRadius: BorderRadius.circular(8.r),
+                                    ),
+                                    child: Text(
+                                      e,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium!
+                                          .copyWith(
+                                              fontSize: 10.sp, color: white),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        )
                       ],
                     ),
                   ),
@@ -481,7 +653,7 @@ class _RecyclingPointsPart extends ConsumerWidget {
         },
         separatorBuilder: (context, index) {
           // Build your separator here
-          return SizedBox(height: 0.h);
+          return SizedBox(height: 16.h);
         },
         itemCount: state.recyclingPoints!.length,
       ),
@@ -602,9 +774,14 @@ class _AutomatedRecyclingPoints extends ConsumerWidget {
 }
 
 class _QrScannedImage extends ConsumerWidget {
+  final String? image;
+  final Uint8List? bufferImage;
+  const _QrScannedImage({
+    this.image,
+    this.bufferImage,
+  });
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(cameraProvider);
     return Expanded(
       child: SizedBox(
         width: double.infinity,
@@ -612,12 +789,19 @@ class _QrScannedImage extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Image.network(
-                  alignment: Alignment.center,
-                  width: 300.w,
-                  height: 400.h,
-                  fit: BoxFit.cover,
-                  state.productRecycle!.image),
+              image != null
+                  ? Image.network(
+                      alignment: Alignment.center,
+                      width: 300.w,
+                      height: 400.h,
+                      fit: BoxFit.cover,
+                      image!)
+                  : Image.memory(
+                      Uint8List.fromList(bufferImage!),
+                      width: 300.w,
+                      height: 400.h,
+                      fit: BoxFit.cover,
+                    ),
               SizedBox(
                 height: 250.h,
               )
@@ -633,13 +817,13 @@ class _MapView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(cameraProvider);
     return ClipRRect(
       borderRadius: BorderRadius.circular(12.r),
       child: SizedBox(
         width: 100.w,
         height: 100.h,
         child: CustomMap(
+          initialZoom: 12,
           active: false,
           initialCenter: location,
           markers: [

@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -9,6 +10,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
+import '../../domain/models/image_scan_info.dart';
 import '../../domain/models/recycling_point.dart';
 import '../states/camera_state/camera_state.dart';
 
@@ -75,26 +77,35 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
 
   Future<void> scanImage() async {
     String prompt =
-        "Sen bir reycleApp image scan botusun döndürdüğün mesaj içinde sadece taranan resmin geri dönüşüme uygun olup olmadığını bool olarak ,resmin ismini ,resmin bilgisiini ,ve geri dönüşüm türünü döndürceksin mesaj içeriği koda içinde parse edilmeye uygun olsun isteline dışınd abir şey döndürme";
+        "Sen bir reycleApp image scan botusun döndürdüğün mesaj içinde sadece taranan resmin geri dönüşüme uygun olup olmadığını bool olarak rcycleboll olarak ,resmin bilgi verici bir ismini title olarak,resmin açıklamasını desc olarak  ,ve geri dönüşüm türünü category olarak sadece plastic,glass,metal,paper,cloth e-waste, ve other olacak şekilde  json formatında ingilizce olarak vereceksin mesjaj başka hiçbirşey içermeyecek  ";
     ref.read(geminiRepositoryProvider).getMessages(prompt, state.image!).listen(
       (event) {
         state = state.copyWith(scannedInfo: state.scannedInfo + event);
+        if (state.scannedInfo.length > 10) {
+          state = state.copyWith(
+              scannedAndParsedInfo:
+                  state.scannedInfo.substring(8, state.scannedInfo.length - 3));
+          if (state.scannedAndParsedInfo.contains("}")) {
+            final data = jsonDecode(state.scannedAndParsedInfo);
+            state = state.copyWith(
+              imageScanInfo: ImageScanInfo.fromJson(data),
+            );
+          }
+        }
       },
     );
+
     state = state.copyWith(isScanned: true);
   }
 
   Future<void> resetScanImages() async {
-    state = state.copyWith(scannedInfo: '', isScanned: false, image: null);
+    state = state.copyWith(
+        scannedInfo: '', isScanned: false, image: null, imageScanInfo: null);
   }
 
   Future<void> resetScanQr() async {
     state = state.copyWith(
         isQrScanned: false, barcodeValue: '', productRecycle: null);
-  }
-
-  Future<void> dispose() async {
-    state.controller?.dispose();
   }
 
   Future<void> setBarcodeValue(String barcodeValue) async {
@@ -161,15 +172,12 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
   }
 
   Future<void> setRecyclingPoints() async {
-    final LatLng currentLocation =
-        await ref.read(locationServiceProvier).getCurrentPosition() ??
-            const LatLng(39.782499, 30.510203);
     // print("currentLocation: $currentLocation");
     try {
       final tempdata = await ref
           .read(prodcuctRepositoryProvider)
           .getRecyclingPoints(ref.read(currentCategoryProvivder.notifier).state,
-              currentLocation);
+              state.userData.location!);
       List<RecyclingPoint> recyclingPoints = [];
 
       for (var element in tempdata) {
@@ -185,5 +193,10 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
 
   Future<void> setAutomated(bool isAutomated) async {
     state = state.copyWith(isAutamated: isAutomated);
+  }
+
+  Future<void> dispose() async {
+    state.controller?.dispose();
+    state.mobileScannerController?.dispose();
   }
 }

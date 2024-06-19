@@ -75,6 +75,12 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const QrPage(),
       );
     },
+    RecyclingMapRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: RecyclingMapPage(),
+      );
+    },
     RegisterRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
@@ -226,6 +232,20 @@ class QrRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'QrRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [RecyclingMapPage]
+class RecyclingMapRoute extends PageRouteInfo<void> {
+  const RecyclingMapRoute({List<PageRouteInfo>? children})
+      : super(
+          RecyclingMapRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'RecyclingMapRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }

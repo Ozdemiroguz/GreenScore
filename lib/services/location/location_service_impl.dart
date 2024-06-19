@@ -27,7 +27,7 @@ class LocationServiceImpl implements LocationService {
         return const LatLng(39000, 30000);
       } else {
         final position = await Geolocator.getCurrentPosition();
-        print('Location permissions are granted');
+        print('Location permissions are granted: $position');
 
         return LatLng(position.latitude, position.longitude);
       }

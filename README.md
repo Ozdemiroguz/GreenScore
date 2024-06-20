@@ -1,6 +1,11 @@
-# Application Name
+# GreenScore
 
-Write a brief description of your application here.
+The greenScore app aims to promote eco-friendly habits and effective waste management. Users can register with their email addresses and passwords, edit their profiles, and receive real-time updates. The app allows users to scan QR codes on products for recycling information and find nearby recycling points on the map. Additionally, users can evaluate product recyclability by scanning product images using Gemini AI. The app is built with Flutter and Firebase, following Clean Architecture principles. 🌿🌎
+
+
+
+
+
 
 ## Features
 

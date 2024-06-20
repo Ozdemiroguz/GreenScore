@@ -10,7 +10,7 @@ The greenScore app aims to promote eco-friendly habits and effective waste manag
 ## Features
 
 1. **Registration and Login Screen:**
-   (Screenshot_1718880197.png)
+![Home Screen](GreenScoreImages/Screenshot_1718880197.png)
    - Users can register for the application using their email addresses and passwords.
    - Password validation is implemented for security.
    - The login screen includes user authentication.

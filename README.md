@@ -10,20 +10,21 @@ The greenScore app aims to promote eco-friendly habits and effective waste manag
 ## Features
 
 1. **Registration and Login Screen:**
+   (Screenshot_1718880197.png)
    - Users can register for the application using their email addresses and passwords.
    - Password validation is implemented for security.
    - The login screen includes user authentication.
 
-2. **Profile Editing and Real-Time Updates:**
+3. **Profile Editing and Real-Time Updates:**
    - Users can edit their profile information.
    - They can also upload profile pictures.
    - Real-time updates allow users to keep their profile information current.
 
-3. **Product Scanner and Recycling Points:**
+4. **Product Scanner and Recycling Points:**
    - Users can scan QR codes to retrieve recycling information for products.
    - They can view nearby recycling points on a map.
 
-4. **Product Assessment with Gemini AI:**
+5. **Product Assessment with Gemini AI:**
    - Users can directly scan a product image to determine if it is suitable for recycling based on information provided by Gemini AI.
    - They can also view the recycling type and suitable points.
 

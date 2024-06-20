@@ -51,3 +51,8 @@ The greenScore app aims to promote eco-friendly habits and effective waste manag
 ## Installation
 
 1. Clone the application:
+2. Install the required packages:
+
+3. Set up your Firebase project and add the `google-services.json` file.
+
+4. Run the application:

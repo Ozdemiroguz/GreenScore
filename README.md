@@ -17,15 +17,22 @@ The greenScore app aims to promote eco-friendly habits and effective waste manag
    - The login screen includes user authentication.
 
 3. **Profile Editing and Real-Time Updates:**
+   <div>
+         <img src="GreenScoreImages/Screenshot_1718898403.png" alt="Home Screen" width="200" height="auto">
+         <img src="GreenScoreImages/Screenshot_1718898383.png" alt="Home Screen" width="200" height="auto">
+
+   </div>
+
+   
    - Users can edit their profile information.
    - They can also upload profile pictures.
    - Real-time updates allow users to keep their profile information current.
 
-4. **Product Scanner and Recycling Points:**
+5. **Product Scanner and Recycling Points:**
    - Users can scan QR codes to retrieve recycling information for products.
    - They can view nearby recycling points on a map.
 
-5. **Product Assessment with Gemini AI:**
+6. **Product Assessment with Gemini AI:**
    - Users can directly scan a product image to determine if it is suitable for recycling based on information provided by Gemini AI.
    - They can also view the recycling type and suitable points.
 

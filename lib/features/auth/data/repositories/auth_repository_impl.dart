@@ -62,6 +62,7 @@ class AuthRepositoryImpl implements AuthRepository {
         'bag': [],
         'saved_co2': user.savedCo2,
         'recycled': user.recycled,
+        'phone': "",
         'created_at': FieldValue.serverTimestamp(),
       });
     } catch (error) {

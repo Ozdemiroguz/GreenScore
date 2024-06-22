@@ -18,10 +18,15 @@ import 'package:camera/camera.dart';
 
 import '../../../../main.dart';
 import '../../../map/presentation/providers/map_provider.dart';
+import '../../domain/models/recycling_point.dart';
 
 final currentLocationProvider =
     StateProvider<LatLng>((ref) => const LatLng(39.782499, 30.510203));
+final currentRecyclingPointProvider =
+    StateProvider<RecyclingPoint?>((ref) => null);
 final currentCategoryProvivder = StateProvider<String>((ref) => '');
+
+final currentPointsProvider = StateProvider<List<RecyclingPoint>>((ref) => []);
 
 GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
 
@@ -267,8 +272,9 @@ class _CameraTools extends ConsumerWidget {
             ),
             SizedBox(width: 20.w), //TODO: Add a space between the buttons
             IconButton(
-              onPressed: () {
-                ref.read(cameraProvider.notifier).takingPicture();
+              onPressed: () async {
+                await ref.read(cameraProvider.notifier).takingPicture();
+                await ref.read(cameraProvider.notifier).scanImage();
               },
               icon: Icon(Icons.camera_alt_outlined),
               iconSize: 64.0,
@@ -311,10 +317,17 @@ class _ImageScanndInfo extends ConsumerWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    Text(
-                      state.imageScanInfo!.title,
-                      style: Theme.of(context).textTheme.displayLarge!.copyWith(
-                          fontSize: 30.sp, fontWeight: FontWeight.bold),
+                    SizedBox(
+                      width: 280.w,
+                      child: Text(
+                        overflow: TextOverflow.ellipsis,
+                        state.imageScanInfo!.title,
+                        style: Theme.of(context)
+                            .textTheme
+                            .displayLarge!
+                            .copyWith(
+                                fontSize: 24.sp, fontWeight: FontWeight.bold),
+                      ),
                     ),
                     SizedBox(
                       width: 4.h,
@@ -353,8 +366,66 @@ class _ImageScanndInfo extends ConsumerWidget {
                   height: 16.h,
                 ),
                 state.imageScanInfo!.recycleBool
-                    ? SizedBox(
-                        height: 16.h,
+                    ? Column(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 20.w, vertical: 28.h),
+                            decoration: BoxDecoration(
+                                border:
+                                    Border.all(width: 1, color: Colors.grey),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(16.r))),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                _QrInfoLabel(
+                                    title: "Material",
+                                    value: state.imageScanInfo!.category),
+                                _QrInfoLabel(
+                                  value: '100g',
+                                  titleWidget: Text.rich(TextSpan(
+                                      text: "Saved Co",
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .labelSmall!
+                                          .copyWith(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                      children: [
+                                        TextSpan(
+                                            text: "2",
+                                            style: TextStyle(fontSize: 7.sp))
+                                      ])),
+                                ),
+                                _QrInfoLabel(
+                                  value: "100",
+                                  title: "Nautre Point",
+                                ),
+                                _QrInfoLabel(title: "Refund", value: "none"),
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.h,
+                          ),
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text(
+                              "Recycling Points",
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge!
+                                  .copyWith(
+                                      fontSize: 20.sp,
+                                      fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          SizedBox(
+                            height: 16.h,
+                          ),
+                          _RecyclingPointsPart(),
+                        ],
                       )
                     : Column(
                         children: [
@@ -529,6 +600,7 @@ class _RecyclingPointsPart extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(cameraProvider);
+
     return SizedBox(
       width: double.infinity,
       child: ListView.separated(
@@ -538,13 +610,12 @@ class _RecyclingPointsPart extends ConsumerWidget {
           // Build your list item here
           return GestureDetector(
             onTap: () {
-              currentlocation = state.recyclingPoints![index].location;
               ref.read(currentLocationProvider.notifier).state =
                   state.recyclingPoints![index].location;
-              ref.read(currentCategoryProvivder.notifier).state =
-                  state.productRecycle!.category;
-              ref.read(mapProvider.notifier).init();
-              context.router.replaceAll([]);
+              ref.read(currentRecyclingPointProvider.notifier).state =
+                  state.recyclingPoints![index];
+
+              context.router.push(RecyclingMapRoute());
             },
             child: Container(
               height: 132.h,

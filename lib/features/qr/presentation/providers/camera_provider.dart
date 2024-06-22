@@ -72,7 +72,6 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
     final File file = File(imageFile.path);
     final Uint8List image = await file.readAsBytes();
     state = state.copyWith(image: image);
-    scanImage();
   }
 
   Future<void> scanImage() async {
@@ -90,6 +89,11 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
             state = state.copyWith(
               imageScanInfo: ImageScanInfo.fromJson(data),
             );
+            print("ImageScanInfo: ${state.imageScanInfo!.category}");
+            ref.read(currentCategoryProvivder.notifier).state =
+                state.imageScanInfo!.category;
+
+            setRecyclingPoints();
           }
         }
       },
@@ -178,14 +182,9 @@ final class _CameraNotifier extends AutoDisposeNotifier<CameraState> {
           .read(prodcuctRepositoryProvider)
           .getRecyclingPoints(ref.read(currentCategoryProvivder.notifier).state,
               state.userData.location!);
-      List<RecyclingPoint> recyclingPoints = [];
 
-      for (var element in tempdata) {
-        if (element.categories.contains(state.productRecycle?.category)) {
-          recyclingPoints.add(element);
-        }
-      }
-      state = state.copyWith(recyclingPoints: recyclingPoints);
+      state = state.copyWith(recyclingPoints: tempdata);
+      ref.read(currentPointsProvider.notifier).state = tempdata;
     } catch (e) {
       print(' An error occurred while getting the recycling points: $e');
     }

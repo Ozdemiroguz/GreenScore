@@ -93,7 +93,7 @@ class _NameInput extends ConsumerWidget {
     final notifier = ref.watch(registerProvider.notifier);
     return CustomTextField(
       initialValue: "",
-      validator: (value) => ref.watch(registerProvider).mailFailure.error,
+      validator: (value) => value!.isEmpty ? "Name can't be empty" : null,
       onChanged: notifier.onNameChanged,
       onFieldSubmitted: notifier.onNameChanged,
       onSaved: (newValue) => notifier.onNameChanged(newValue!),
@@ -108,7 +108,7 @@ class _SurnameInput extends ConsumerWidget {
     final notifier = ref.watch(registerProvider.notifier);
     return CustomTextField(
       initialValue: "",
-      validator: (value) => ref.watch(registerProvider).mailFailure.error,
+      validator: (value) => value!.isEmpty ? "Surname can't be empty" : null,
       onChanged: notifier.onSurnameChanged,
       onFieldSubmitted: notifier.onSurnameChanged,
       onSaved: (newValue) => notifier.onSurnameChanged(newValue!),
@@ -136,8 +136,7 @@ class _PasswordInput extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final notifier = ref.watch(registerProvider.notifier);
-    return CustomTextField(
-      initialValue: "",
+    return PasswordTextField(
       onChanged: notifier.onPasswordChanged,
       validator: (value) => ref.watch(registerProvider).passwordFailure.error,
       onFieldSubmitted: notifier.onPasswordChanged,
@@ -175,7 +174,7 @@ class FormButton extends ConsumerWidget {
 
             if (ref.watch(registerProvider).status ==
                 AuthStatus.authenticated) {
-              context.router.replaceAll([const HomeRoute()]);
+              context.router.replaceAll([const LoginRoute()]);
             }
           }
         });

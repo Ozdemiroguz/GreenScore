@@ -82,8 +82,8 @@ class ProductRepositoryImpl implements ProductRepository {
                 ))
             .toList();
         data.sort((a, b) => a.distance.compareTo(b.distance));
+        print('Recycling Points impl: $data');
 
-        print('Recycling Points: $data');
         return data;
       });
     } catch (e) {
